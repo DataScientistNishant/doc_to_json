@@ -1,47 +1,43 @@
-
-# My first Program in python using pandas
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[60]:
+# In[39]:
+import sys
 
 
 import pandas as pd
-gk = pd.read_fwf('GK-13.txt')
-gk
-
-
-# In[61]:
+gk = pd.read_fwf(sys.argv)
 
 
 gk = list(gk["ï»¿[hello]"])
-gk
 
 
-# In[62]:
+
+# In[41]:
 
 
-temp  =[]
+temp = []
 
-final = ""
-quesline  = ""
+ques = ""
+ops = ""
 
-for line in gk:
-    if line.startswith("Q"):
-        if quesline != "" or final != "":
-            temp.append((quesline + final))
-            final = ""        
-        quesline = line;
-    else:
-        final += ","+line
+for idx in range(len(gk)+1):     
+    if idx < len(gk):         
+        line = str(gk[idx])        
         
+    if line.startswith('Q'):        
+        if ques != "":
+            temp.append((ques+ops))
+        ques = line
+        ops = ""         
+    else:
+        if ops.find(line)==-1:
+            ops += "," + line 
+        if idx == (len(gk)):            
+            temp.append((ques+ops)) 
 
-#df = pd.DataFrame(new_arr,columns=["Qno", "Ques"])
 
-temp
-
-
-# In[63]:
+# In[42]:
 
 
 new_arr  =[]
@@ -55,6 +51,7 @@ for line in temp:
             ops = questn[1].split("[")
             news = [questn[0]]
             if "Answer:" in ops[4]:
+                
                 ans = ops[4].split("Answer:")
             
             opttemp = ops[0:-2]
@@ -65,42 +62,42 @@ for line in temp:
 new_arr
 
 
-# In[64]:
+# In[43]:
 
 
 df = pd.DataFrame(new_arr, columns=['Qno','Que','op1','op2','op3','op4','ans'])
 df
 
 
-# In[65]:
+# In[44]:
 
 
 df['op1'] =  df['op1'].str.replace('A]','')
 df['op1']
 
 
-# In[66]:
+# In[45]:
 
 
 df['op2'] = df['op2'].str.replace('B]','')
 df['op2']
 
 
-# In[67]:
+# In[46]:
 
 
 df['op3']=df['op3'].str.replace('C]','')
 df['op3']
 
 
-# In[68]:
+# In[47]:
 
 
 df['op4']=df['op4'].str.replace('D]','')
 df['op4']
 
 
-# In[69]:
+# In[48]:
 
 
 arr = []
@@ -111,10 +108,10 @@ for idx in range(leng+1):
     if idx > 0:
         arr.append(idx)
 df['Qno'] = arr
-df
 
 
-# In[168]:
+
+# In[49]:
 
 
 import re
@@ -127,7 +124,7 @@ for idx in range(len(list1)):
         
 #df['op2'],df['op3'],df['op4'] = list1
 ques = df['Que'].copy()
-ques
+
 qu = []
 for spec in ques:
     qu.append(re.sub("[^A-Za-z0-9,.?]"," ",spec))
@@ -137,7 +134,7 @@ df['Que'][13]
            
 
 
-# In[189]:
+# In[50]:
 
 
 import json
@@ -166,15 +163,15 @@ for i in range(len(df["Qno"])):
     
 
 
-file = open("myoutput.json", "w")
+file = open("myGK-1.json", "w")
 file.write(str(dictarr))
 file.close()
 
 
-# In[190]:
+# In[51]:
 
 
-dictarr
+
 
 
 # In[ ]:
